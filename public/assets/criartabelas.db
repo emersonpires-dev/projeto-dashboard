@@ -1,0 +1,32 @@
+-- Tabela para Usuários
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL, -- Para armazenar a senha criptografada
+    user_type ENUM('admin', 'manager', 'viewer') NOT NULL DEFAULT 'viewer', -- Tipos de permissão
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela para Categorias de Gastos (opcional, mas bom para padronizar)
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT
+);
+
+-- Inserir categorias padrão (você pode ajustar ou adicionar mais)
+INSERT INTO categories (name) VALUES ('Marketing'), ('Ferramentas'), ('Fornecedores'), ('Frete'), ('Contabilidade'), ('Salários'), ('Outros');
+
+-- Tabela para Gastos
+CREATE TABLE expenses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    value DECIMAL(10, 2) NOT NULL,
+    category_id INT, -- Ligação com a tabela categories
+    expense_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+);
